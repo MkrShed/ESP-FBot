@@ -10,16 +10,24 @@ namespace fbot {
 static const char *const TAG = "fbot";
 
 static uint16_t derive_p180_state_flags(const uint8_t *data, uint16_t length, uint16_t state_flags) {
-  if (state_flags != 0 || length <= 115) {
+  if (length <= 115) {
     return state_flags;
   }
 
-  bool usb_state_p180 = data[115] != 0;
-  bool dc_state_p180 = data[114] != 0;
+  // data[113]: AC state (0 = off, 16 = on, 120 = charging)
   bool ac_state_p180 = data[113] != 0;
+  
+  // data[114]: DC state is bit 0, Light state is bit 3
+  bool dc_state_p180 = (data[114] & 0x01) != 0;
+  bool light_state_p180 = (data[114] & 0x08) != 0;
+  
+  // data[115]: USB state is in the lower 7 bits (e.g. 55 when on)
+  bool usb_state_p180 = (data[115] & 0x7F) != 0;
+
   return (usb_state_p180 ? STATE_USB_BIT : 0) |
          (dc_state_p180 ? STATE_DC_BIT : 0) |
-         (ac_state_p180 ? STATE_AC_BIT : 0);
+         (ac_state_p180 ? STATE_AC_BIT : 0) |
+         (light_state_p180 ? STATE_LIGHT_BIT : 0);
 }
 
 void Fbot::setup() {
