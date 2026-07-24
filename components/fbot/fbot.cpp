@@ -614,6 +614,7 @@ void Fbot::parse_notification(const uint8_t *data, uint16_t length) {
     this->light_active_binary_sensor_->publish_state(light_state);
   }
   
+#ifdef USE_SWITCH
   // Sync switch states with device state
   if (this->usb_switch_ != nullptr) {
     this->usb_switch_->publish_state(usb_state);
@@ -627,6 +628,7 @@ void Fbot::parse_notification(const uint8_t *data, uint16_t length) {
   if (this->light_switch_ != nullptr) {
     this->light_switch_->publish_state(light_state);
   }
+#endif
   
   ESP_LOGD(TAG, "Battery: %.1f%% S1:%.1f%%(con:%d) S2:%.1f%%(con:%d), DC input: %dW AC input: %dW AC Output: %dW, USB: %d, DC: %d, AC: %d",
            battery_percent, battery_percent_s1, battery_s1_connected, battery_percent_s2, battery_s2_connected,
@@ -650,18 +652,22 @@ void Fbot::parse_settings_notification(const uint8_t *data, uint16_t length) {
   // Parse AC Silent state (register: 0=off, 1=on)
   bool ac_silent_state = this->get_register(data, length, this->register_map_.ac_silent_register) == 1;
   
+#ifdef USE_SWITCH
   // Sync AC Silent switch state with device
   if (this->ac_silent_switch_ != nullptr) {
     this->ac_silent_switch_->publish_state(ac_silent_state);
   }
+#endif
   
   // Parse Key Sound state (register: 0=off, 1=on)
   bool key_sound_state = this->get_register(data, length, this->register_map_.key_sound_register) == 1;
   
+#ifdef USE_SWITCH
   // Sync Key Sound switch state with device
   if (this->key_sound_switch_ != nullptr) {
     this->key_sound_switch_->publish_state(key_sound_state);
   }
+#endif
   
   // Parse Light Mode state (register: 0=Off, 1=On, 2=SOS, 3=Flashing)
   uint16_t light_mode_value = this->get_register(data, length, this->register_map_.light_control_register);
@@ -764,10 +770,12 @@ void Fbot::control_light_mode(const std::string &value) {
   ESP_LOGI(TAG, "Setting light mode to: %s (value: %d)", value.c_str(), mode_value);
   this->send_control_command(this->register_map_.light_control_register, mode_value);
   
+#ifdef USE_SWITCH
   // Update the light switch state based on the mode (off=false, any other mode=true)
   if (this->light_switch_ != nullptr) {
     this->light_switch_->publish_state(mode_value != 0);
   }
+#endif
 }
 
 void Fbot::control_ac_charge_limit(const std::string &value) {

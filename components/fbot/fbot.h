@@ -5,7 +5,9 @@
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
+#ifdef USE_SWITCH
 #include "esphome/components/switch/switch.h"
+#endif
 
 #ifdef USE_NUMBER
 #include "esphome/components/number/number.h"
@@ -220,12 +222,14 @@ class Fbot : public esphome::ble_client::BLEClientNode, public Component {
   }
   
   // Switch setters
+#ifdef USE_SWITCH
   void set_usb_switch(switch_::Switch *sw) { this->usb_switch_ = sw; }
   void set_dc_switch(switch_::Switch *sw) { this->dc_switch_ = sw; }
   void set_ac_switch(switch_::Switch *sw) { this->ac_switch_ = sw; }
   void set_light_switch(switch_::Switch *sw) { this->light_switch_ = sw; }
   void set_ac_silent_switch(switch_::Switch *sw) { this->ac_silent_switch_ = sw; }
   void set_key_sound_switch(switch_::Switch *sw) { this->key_sound_switch_ = sw; }
+#endif
   
 #ifdef USE_SELECT
   // Select setters
@@ -319,12 +323,14 @@ class Fbot : public esphome::ble_client::BLEClientNode, public Component {
   binary_sensor::BinarySensor *light_active_binary_sensor_{nullptr};
   
   // Switches
+#ifdef USE_SWITCH
   switch_::Switch *usb_switch_{nullptr};
   switch_::Switch *dc_switch_{nullptr};
   switch_::Switch *ac_switch_{nullptr};
   switch_::Switch *light_switch_{nullptr};
   switch_::Switch *ac_silent_switch_{nullptr};
   switch_::Switch *key_sound_switch_{nullptr};
+#endif
   
 #ifdef USE_NUMBER
   // Numbers
