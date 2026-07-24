@@ -716,18 +716,34 @@ void Fbot::update_connected_state(bool state) {
 
 // Control methods
 void Fbot::control_usb(bool state) {
+  if (this->device_type_ == DeviceType::P180) {
+    ESP_LOGW(TAG, "USB switch control is not supported on P180 yet");
+    return;
+  }
   this->send_control_command(this->register_map_.usb_control_register, state ? 1 : 0);
 }
 
 void Fbot::control_dc(bool state) {
+  if (this->device_type_ == DeviceType::P180) {
+    ESP_LOGW(TAG, "DC switch control is not supported on P180 yet");
+    return;
+  }
   this->send_control_command(this->register_map_.dc_control_register, state ? 1 : 0);
 }
 
 void Fbot::control_ac(bool state) {
+  if (this->device_type_ == DeviceType::P180) {
+    ESP_LOGW(TAG, "AC switch control is not supported on P180 yet");
+    return;
+  }
   this->send_control_command(this->register_map_.ac_control_register, state ? 1 : 0);
 }
 
 void Fbot::control_light(bool state) {
+  if (this->device_type_ == DeviceType::P180) {
+    ESP_LOGW(TAG, "Light switch control is not supported on P180 yet");
+    return;
+  }
   // Simple on/off control - uses value 1 for on, 0 for off
   this->send_control_command(this->register_map_.light_control_register, state ? 1 : 0);
 }
