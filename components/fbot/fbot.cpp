@@ -310,9 +310,6 @@ void Fbot::log_register_summary(const uint8_t *data, uint16_t length, const char
       if (p180_dc_input_watts > 0 && dc_input_watts == 0) {
         dc_input_watts = p180_dc_input_watts;
       }
-      if (dc_input_watts > 0) {
-        ac_input_watts = 0;
-      }
     }
     ESP_LOGD(TAG,
              "Meaningful probes: soc_raw=%u soc=%.1f%% charge_level_raw=%u input=%u ac_output=%u flags=0x%04x ac_in=%u dc_in=%u p180_state_bytes=%u,%u,%u",
@@ -487,9 +484,6 @@ void Fbot::parse_notification(const uint8_t *data, uint16_t length) {
     }
     if (dc_input_watts == 0 && input_watts > 0) {
       dc_input_watts = input_watts;
-    }
-    if (dc_input_watts > 0) {
-      ac_input_watts = 0;
     }
     if (ac_output_watts == 0) {
       uint16_t p180_ac_output_watts = this->get_register(data, length, 12);
