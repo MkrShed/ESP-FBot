@@ -506,6 +506,10 @@ void Fbot::parse_notification(const uint8_t *data, uint16_t length) {
   float ac_in_frequency = this->get_register(data, length, 22) * 0.01f;
   uint16_t time_to_full = this->get_register(data, length, 58);
   uint16_t remaining_minutes = this->get_register(data, length, 59);
+  if (this->device_type_ == DeviceType::P180) {
+    time_to_full = this->get_register(data, length, 71);
+    remaining_minutes = this->get_register(data, length, 72);
+  }
   
   // USB port power outputs (multiply by 0.1 to convert to watts)
   float usb_a1_power = this->get_register(data, length, this->register_map_.usb_a1_out_register) * 0.1f;
