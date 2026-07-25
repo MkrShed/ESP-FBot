@@ -23,10 +23,10 @@ static uint16_t derive_p180_state_flags(const uint8_t *data, uint16_t length, ui
   // data[115]: USB state is in the lower 7 bits (e.g. 55 when on)
   bool usb_state_p180 = (data[115] & 0x7F) != 0;
 
-  // data[159] and data[160] (Register 78): Light state (1 = on)
+  // data[162] and data[163] (Register 78, offset 6 + 78*2): Light state (1 = on)
   bool light_state_p180 = false;
-  if (length > 160) {
-    uint16_t light_reg = (data[159] << 8) | data[160];
+  if (length > 163) {
+    uint16_t light_reg = (data[162] << 8) | data[163];
     light_state_p180 = (light_reg > 0);
   }
 
